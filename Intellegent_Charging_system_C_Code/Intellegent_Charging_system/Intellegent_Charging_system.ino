@@ -5,6 +5,7 @@
 #define CELL2 2
 #define CELL3 3
 #define CELL4 4
+asint voltage1, voltage2, voltage3, voltage4, voltageAll = 0;
 
 void setup () {
   
@@ -14,7 +15,6 @@ void setup () {
   pinMode(CELL4, INPUT);
   // pinMode(CELLALL, INPUT);
   
-  int voltage1, voltage2, voltage3, voltage4, voltageAll = 0;
 
   Serial.begin(9600);
 }
