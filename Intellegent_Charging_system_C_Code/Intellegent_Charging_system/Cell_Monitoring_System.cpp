@@ -15,7 +15,7 @@
 void setup() {
   //Initailize variables
   int cellVoltage[8]= 0;  
-  int dataNumber = 0;
+  int dataNumber = 1;
   int cellNumber = 1;
   char input;
   
@@ -42,7 +42,7 @@ void setup() {
 
 /************************ Main Loop Starts Here*********************/
 void loop() {
-  for(cellNumber = 0; cellNumber < 7; cellNumber++) { 
+  for(cellNumber = 0; cellNumber < 7; cellNumber++) { //reads 1 by 1, reads all 7 then moves on
     switch (cellNumber) {
       case 0:  
         cellVoltage[cellNumber] = analogRead(CELL1);
@@ -64,16 +64,18 @@ void loop() {
   }
   
   for(i = 0; i < 7; i++) {
-    serial.write(i);
+    serial.write(i); //cell #
     serial.write("*");
-    serial.write(cellVoltage[i]);
+    serial.write(cellVoltage[i]); //cell voltage
     serial.write("*");
-    serial.write(dataNumber);
+    serial.write(cellCurrent[i]); //cell voltage
+    serial.write("*");
+    serial.write(dataNumber); //
     serial.write("^");
   }
   
   dataNumber++;
-  delay(1000);
+  delay(1000); //1s
   cellNumber = 0;
  
   for(i = 0; i < 7; i++) {
