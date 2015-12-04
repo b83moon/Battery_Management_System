@@ -29,14 +29,21 @@
 % stop
 % 
 % plot data all on one graph
-
-s=serial('/dev/tty.KeySerial1', 'BaudRate', 9600); %intializes serial port being read from
+clear; clc; close all;
+delete(instrfind);
+s = serial('/dev/cu.usbmodem1411'); %intializes serial port being read from
+disp(s);
+fopen(s);
+disp(s);
 initialization = fscanf(s); %place buffer into intialization
-if initialization == '*' %determines if arduino has sent 
-fprintf('*') %print * back to arduino to begin reading data
 
+while initialization ~= '*' %determines if arduino has sent 
+end 
+    fprintf('*'); %print * back to arduino to begin reading data
+disp('connection successss!');
 %continues to read data as long as buffer has data
-    while TransferStatus ~=idle
+
+    while fscanf(s) == 1
        temp = fscanf(s,c,1);
         
        if temp == '*'
@@ -66,7 +73,7 @@ fprintf('*') %print * back to arduino to begin reading data
        end
        
     end
-end
+
 
 %plots all data points on graph per data_num set
 for cell_num = 1:8
