@@ -29,9 +29,9 @@ void loop() {
  
   //Send serial data 
   Serial.print("y\n"); //send cell #
-//  Serial.println(cellVoltage); //
-//  Serial.println(cellCurrent); //cell voltage
-//  Serial.println(time1);
+Serial.println(cellVoltage); //
+Serial.println(cellCurrent); //cell voltage
+Serial.println(time1);
   delay(1000); //TODO calculate delay
 }
 

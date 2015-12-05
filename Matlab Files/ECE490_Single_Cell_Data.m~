@@ -15,7 +15,9 @@ disp(fscanf(s));
 
 %continues to read data as long as buffer has data
 while true
-    if  durp == '&'
+    durp = fscanf(s);
+    disp(durp);
+    if  durp == ''
        disp('hi');
        %make temp variable for loops
        voltage = fscanf(s);
