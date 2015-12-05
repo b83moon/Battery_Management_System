@@ -1,15 +1,14 @@
-#include <SerialSoftware.h>
-#include <Timer.h>
+#include <SoftwareSerial.h>
+
 // Initial Arduino Mega Pins
 #define CELL1 0   //Analog Pins 0 connected to cell cathode
 
 //Initailize variables
 int cellVoltage = 0;  
 int cellCurrent = 0;
-int dataNumber = 1;
 char input = 'z';
 int cellNumber = 0;
-int time = 0;
+int time1 = 0;
   
 /******************** Initialization ****************************/
 void setup() {
@@ -29,13 +28,10 @@ void loop() {
   //time = timervalue() or something TOSODO
  
   //Send serial data 
-  Serial.print(time); //send cell #
-  Serial.print("*"); //
-  Serial.print(cellVoltage); //cell voltage
-  Serial.print("*");
-  Serial.print(cellCurrent); //
-  Serial.print("^");
-  
+  Serial.print("y\n"); //send cell #
+//  Serial.println(cellVoltage); //
+//  Serial.println(cellCurrent); //cell voltage
+//  Serial.println(time1);
   delay(1000); //TODO calculate delay
 }
 
