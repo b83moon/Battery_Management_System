@@ -3,10 +3,13 @@
 
 clear; clc; close all;
 delete(instrfind);
-s = serial('/dev/cu.usbmodem1411'); %intializes serial port being read from
+s = serial('/dev/cu.usbmodem1421'); %intializes serial port being read from
 fopen(s);
-while fscanf(s) ~= '*'
+inputString = fscanf(s);
+while ~strncmpi(inputString,'*',1)
     disp('not connected');
+    inputString = fscanf(s);
+    disp(inputString);
 end 
 fprintf(s,'*');           %print * back to arduino to begin reading data
 disp('connection successss!');
@@ -14,13 +17,15 @@ disp(fscanf(s));
 
 %continues to read data as long as buffer has data
 while true
-    durp = fscanf(s);
-    if durp == '&'
+    inputString = fscanf(s);
+    disp(inputString);
+    if strncmpi(inputString,'&',1)
        disp('hi');
        %make temp variable for loops
        voltage = fscanf(s);
        current = fscanf(s);
        time = fscanf(s);
+       
        disp(voltage);
        disp(current);
        disp(time);

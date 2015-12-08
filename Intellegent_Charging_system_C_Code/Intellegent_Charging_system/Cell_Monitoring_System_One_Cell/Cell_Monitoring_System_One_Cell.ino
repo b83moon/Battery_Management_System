@@ -4,10 +4,10 @@
 #define CELL1 0   //Analog Pins 0 connected to cell cathode
 
 //Initailize variables
-int cellVoltage = 0;  
-int cellCurrent = 0;
+int cellVoltage = 2;  
+int cellCurrent = 45;
 char input = 'z';
-int cellNumber = 0;
+int cellNumber = 1234;
 int time1 = 0;
   
 /******************** Initialization ****************************/
@@ -29,9 +29,9 @@ void loop() {
  
   //Send serial data 
   Serial.println("&"); //send cell #
-  //Serial.println(cellVoltage); //
-  //Serial.println(cellCurrent); //cell voltage
-  //Serial.println(time1);
+  Serial.println(cellVoltage); //
+  Serial.println(cellCurrent); //cell voltage
+  Serial.println(time1);
   delay(1000); //TODO calculate delay
 }
 
@@ -39,7 +39,7 @@ void loop() {
 /************* Serial Connection Initailization *************/
 int SerialLink() {
   Serial.begin(9600);   //Start Serail Connection with Matlab
-  Serial.print("*\n");   // Tell matlab to begin with * command
+  Serial.print("**\n");   // Tell matlab to begin with * command
   while(input != '*') {   // wait for handshake signal * from matlab to begin 
   input = Serial.read();
   }
