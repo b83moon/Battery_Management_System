@@ -3,9 +3,8 @@
 
 clear; clc; close all;
 delete(instrfind);
-s = serial('/dev/cu.usbserial-ADAOESO6w'); %intializes serial port being read from
+s = serial('/dev/cu.usbmodem1411'); %intializes serial port being read from
 fopen(s);
-disp(s);
 while fscanf(s) ~= '*'
     disp('not connected');
 end 
@@ -15,7 +14,8 @@ disp(fscanf(s));
 
 %continues to read data as long as buffer has data
 while true
-    if  durp == '&'
+    durp = fscanf(s);
+    if durp == '&'
        disp('hi');
        %make temp variable for loops
        voltage = fscanf(s);

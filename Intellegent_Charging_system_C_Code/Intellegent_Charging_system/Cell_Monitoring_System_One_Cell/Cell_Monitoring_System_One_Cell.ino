@@ -23,15 +23,15 @@ void setup() {
 
 /************************ Main Loop Starts Here*********************/
 void loop() {
-  cellVoltage = ReadVoltage();
-  cellCurrent = ReadCurrent();
+//  cellVoltage = ReadVoltage();
+//  cellCurrent = ReadCurrent();
   //time = timervalue() or something TOSODO
  
   //Send serial data 
-  Serial.print("y\n"); //send cell #
-Serial.println(cellVoltage); //
-Serial.println(cellCurrent); //cell voltage
-Serial.println(time1);
+  Serial.println("&"); //send cell #
+  //Serial.println(cellVoltage); //
+  //Serial.println(cellCurrent); //cell voltage
+  //Serial.println(time1);
   delay(1000); //TODO calculate delay
 }
 
@@ -50,11 +50,10 @@ int ReadVoltage() {
   return analogRead(CELL1);
 }
 
+
 int ReadCurrent() {
   // TODO Implement read current
   int current = 0;
-  
-  
   return current;
 }
 
