@@ -3,7 +3,7 @@
 
 clear; clc; close all;
 delete(instrfind);
-s = serial('/dev/cu.usbmodem1421'); %intializes serial port being read from
+s = serial('/dev/tty.usbserial-00001014'); %intializes serial port being read from
 fopen(s);
 inputString = fscanf(s);
 while ~strncmpi(inputString,'*',1)
@@ -13,7 +13,6 @@ while ~strncmpi(inputString,'*',1)
 end 
 fprintf(s,'*');           %print * back to arduino to begin reading data
 disp('connection successss!');
-disp(fscanf(s));
 
 %continues to read data as long as buffer has data
 while true

@@ -39,7 +39,7 @@ void loop() {
 /************* Serial Connection Initailization *************/
 int SerialLink() {
   Serial.begin(9600);   //Start Serail Connection with Matlab
-  Serial.print("**\n");   // Tell matlab to begin with * command
+  Serial.print("*\n");   // Tell matlab to begin with * command
   while(input != '*') {   // wait for handshake signal * from matlab to begin 
   input = Serial.read();
   }
