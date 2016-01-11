@@ -2,7 +2,9 @@
 
 
 clear; clc; close all;
+
 delete(instrfind);
+dataNumber = 1;
 s = serial('/dev/tty.usbserial-00001014'); %intializes serial port being read from
 fopen(s);
 inputString = fscanf(s);
@@ -17,49 +19,27 @@ disp('connection successss!');
 %continues to read data as long as buffer has data
 while true
     inputString = fscanf(s);
-    disp(inputString);
     if strncmpi(inputString,'&',1)
-       disp('hi');
        %make temp variable for loops
-       voltage = fscanf(s);
-       current = fscanf(s);
-       time = fscanf(s);
+       voltageStr = fscanf(s);
+       voltage = str2num(voltageStr);
+       currentStr = fscanf(s);
+       current = str2num(currentStr);
+       timeStr = fscanf(s);
+       time = str2num(timeStr);
        
        disp(voltage);
        disp(current);
        disp(time);
-%        %display time then move on for other *
-%        if temp == '*'
-%             disp('*')
-%        else
-%            time=fscanf(s);
-%        end
-% 
-%        %display voltage then move on for other *
-%        if temp == '*'
-%             disp('*')
-%        else
-%            cell_voltage=fscanf(s);
-%        end
-%        
-%         %display current then move on for other *
-%        if temp == '*'
-%             disp('*')
-%        else
-%            cell_current=fscanf(s);
-%        
-%        end
-%        
-%        %wait for ^ to take in data set
-%        if temp == '^'
-%            disp('^')
-%        else 
-%            data_num=fscanf(s);
-%        end
     else
         disp('did not receive &');
         pause(1); 
     end
+    
+    currentArray(dataNumber) = current;
+    voltageArray(dataNumber) = voltage;
+    timeArray(dataNumber) = time;
+    dataNumber = dataNumber + 1;
 
 end
     
