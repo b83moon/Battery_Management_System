@@ -2,8 +2,10 @@
 
 
 clear; clc; close all;
+
 delete(instrfind);
-s = serial('/dev/cu.usbmodem1421'); %intializes serial port being read from
+dataNumber = 1;
+s = serial('/dev/tty.usbserial-00001014'); %intializes serial port being read from
 fopen(s);
 Ddisp(s);
 while fscanf(s) == '*'
@@ -15,24 +17,29 @@ while ~strncmpi(inputString,'*',1)
 end 
 fprintf(s,'*');           %print * back to arduino to begin reading data
 disp('connection successss!');
+<<<<<<< HEAD
 while fscanf(s)=='&'
 end
+=======
+>>>>>>> 94e3b3fbba7ec73113073245f8347ff4c6804618
 
 %continues to read data as long as buffer has data
 
 while true
     inputString = fscanf(s);
-    disp(inputString);
     if strncmpi(inputString,'&',1)
-       disp('hi');
        %make temp variable for loops
-       voltage = fscanf(s);
-       current = fscanf(s);
-       time = fscanf(s);
+       voltageStr = fscanf(s);
+       voltage = str2num(voltageStr);
+       currentStr = fscanf(s);
+       current = str2num(currentStr);
+       timeStr = fscanf(s);
+       time = str2num(timeStr);
        
        disp(voltage);
        disp(current);
        disp(time);
+<<<<<<< HEAD
     end
 %        %display time then move on for other *
 %        if temp == '*'
@@ -64,6 +71,18 @@ while true
 %        end
         disp('did not receive &');
         pause(1); 
+=======
+    else
+        disp('did not receive &');
+        pause(1); 
+    end
+    
+    currentArray(dataNumber) = current;
+    voltageArray(dataNumber) = voltage;
+    timeArray(dataNumber) = time;
+    dataNumber = dataNumber + 1;
+
+>>>>>>> 94e3b3fbba7ec73113073245f8347ff4c6804618
 end
 
 
