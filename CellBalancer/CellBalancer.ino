@@ -33,6 +33,11 @@ void setup() {
   digitalWrite(DC_Converter, HIGH);
   digitalWrite(LED, HIGH);
 
+  // Allow time for DC_Converter to turn on
+  delay(500);
+  Serial.println("DC_Converter ON");
+  Serial.println("");
+
 }
 
 
@@ -81,8 +86,9 @@ void loop() {
     Serial.println("DC Converter OFF");
     return 0;
   }
+
+
+  
 }
-
-
 
 // End of file.
