@@ -5,10 +5,10 @@
 
 //Initailize variables
 int cellVoltage = 2;  
+unsigned long time1 = millis();
 int cellCurrent = 45;
 char input = 'z';
 int cellNumber = 1234;
-int time1 = 0;
   
 /******************** Initialization ****************************/
 void setup() {
@@ -25,14 +25,13 @@ void setup() {
 void loop() {
 //  cellVoltage = ReadVoltage();
 //  cellCurrent = ReadCurrent();
-  //time = timervalue() or something TOSODO
+ time1 = millis();
  
   //Send serial data 
   Serial.print("&\n"); //send cell #
-  Serial.println("&"); //send cell #
   Serial.println(cellVoltage); //
   Serial.println(cellCurrent); //cell voltage
-  Serial.println(time1);
+  Serial.println(time1/1000);
   delay(1000); //TODO calculate delay
 }
 
