@@ -2,6 +2,9 @@
 
 // Initial Arduino Mega Pins
 #define CELL1 0   //Analog Pins 0 connected to cell cathode
+#define CurrentSensor 3
+
+
 
 //Initailize variables
 int cellVoltage = 2;  
@@ -16,6 +19,8 @@ void setup() {
   
   //Initialize pin modes
   pinMode(INPUT, CELL1);
+  pinMode(CurrentSensor, INPUT);
+  
   SerialLink();
   // TODO Implement timer////////////////
 }
@@ -24,8 +29,8 @@ void setup() {
 /************************ Main Loop Starts Here*********************/
 void loop() {
 //  cellVoltage = ReadVoltage();
-//  cellCurrent = ReadCurrent();
- time1 = millis();
+  CurrentMeasure();
+  time1 = millis();
  
   //Send serial data 
   Serial.print("&\n"); //send cell #
@@ -51,12 +56,15 @@ int ReadVoltage() {
 }
 
 
-int ReadCurrent() {
-  // TODO Implement read current
-  int current = 0;
+float CurrentMeasure() { 
+  float analogVoltage = 0;
+  float current = 0;
+  analogVoltage = analogRead(CurrentSensor)*5.000/1024.000;
+  Serial.print("Analog Voltage: ");
+  Serial.println(analogVoltage);
+  current = (analogVoltage-337.97)/3.787;
   return current;
 }
-
 
   
   

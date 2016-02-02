@@ -7,15 +7,16 @@
 /******************************************************/
 
 
-#define Current_Sensor 2
-#define DC_Convterter 4
+#define Current_Sensor 3
+#define DC_Converter 10
 #define LED 13
 
-float Current_thresh 0.05 // [A]
+float Current_thresh = 0.5; // [A]
 float analogCurrent = 0;
 float current = 0;
-float sensitivity = 0.0185 // [V/A]
-
+float sensitivity = 0.0185; // [V/A]
+int IterationNumber = 0;
+float rawADC = 0;
 
 
 void setup() {
@@ -34,10 +35,9 @@ void setup() {
   digitalWrite(LED, HIGH);
 
   // Allow time for DC_Converter to turn on
-  delay(500);
+  delay(5000);
   Serial.println("DC_Converter ON");
   Serial.println("");
-
 }
 
 
@@ -65,30 +65,42 @@ void loop() {
   //  3. 1.95V - 1.65V = 0.3V above the 0A point on Current Sensor scale
   //  4. 0.3V / 0.0185 V/A = 16A is the current
 
-  // Read & print ADC output
-  int RawADC = analogRead(Current_Sensor);
-  Serial.print("ADC: ");
-  Serial.print(RawADC);
-  Serial.println("/1024.");
-
-  // Calculate & print current
-  float current = ( ( (RawADC/1024) * 3.3) - 1.65) /sensitivity;
-  Serial.print("Current: ");
-  Serial.print(current, 4);
-  Serial.println(" A.");
-  Serial.println("");
+  current = CurrentMeasure();
   
   // Disable DC_Converter when current falls below cut-off
   if (current < Current_thresh) {
-    digitalWrite(DC_Converter, LOW);
-    digitalWrite(LED, LOW);
-    Serial.println("Current cut-off point reached.");
-    Serial.println("DC Converter OFF");
-    return 0;
+    IterationNumber++;
+    delay(250);
+    Serial.print("Current Threshold Reached : ");
+    Serial.print(IterationNumber);
+    Serial.println(" times.");
+      if (IterationNumber == 3){
+      digitalWrite(DC_Converter, LOW);
+      digitalWrite(LED, LOW);
+      Serial.println("Current cut-off point reached.");
+      Serial.println("DC Converter OFF");
+      while (true);
+    }
+  } else {
+    IterationNumber = 0;
   }
+}
 
 
-  
+float CurrentMeasure() { 
+ //   Read & print ADC output
+  int rawADC = analogRead(Current_Sensor);
+  Serial.print("ADC: ");
+  Serial.print(rawADC);
+  Serial.println("/1024.");
+
+  // Calculate & print current
+  float current = (rawADC/1024)*5.0000000000000000000;
+  Serial.print("Current: ");
+  Serial.print(current, 8);
+  Serial.println(" A.");
+  Serial.println();
+  return current;
 }
 
 // End of file.
