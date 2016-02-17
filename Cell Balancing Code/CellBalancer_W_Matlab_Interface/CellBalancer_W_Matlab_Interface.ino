@@ -18,6 +18,8 @@ int IterationNumber = 0;
 const int I2CadcVRef = 4880;
 MCP3221 i2cADC(i2cAddress, I2CadcVRef);
 unsigned long time1 = millis();
+char input = 'z';
+
 
 
 
@@ -32,7 +34,7 @@ void setup() {
 
   // Set up Serial Connection
   Serial.begin(9600);
-  Serial.println("Setup Complete.");
+//  Serial.println("Setup Complete.");
 
   // Setup I2C Connection
   Wire.begin();
@@ -43,10 +45,12 @@ void setup() {
 
   // Allow time for DC_Converter to turn on
   delay(2000);
-  Serial.println("DC_Converter ON");
-  Serial.println("");
+//  Serial.println("DC_Converter ON");
+//  Serial.println("");
 
-  //Initailize Loop
+  //Initailize Serial Link with Matlab
+  SerialLink();
+
 
 }
 
@@ -56,27 +60,32 @@ void setup() {
 
 void loop() {
   time1 = millis();
-  int current = CurrentMeasure();
+  float avgCurrent = AverageCurrentMeasure();
   delay(2000);
+
+  //Send serial data to Matlab
+  Serial.print("&\n"); //send cell #
+  Serial.println(avgCurrent); //cell voltage
+  Serial.println(time1/1000);
   
   // Disable DC_Converter when current falls below cut-off
   if (avgCurrent < currentThresh) {
     IterationNumber++;
-    Serial.print("Current Threshold Reached : ");
-    Serial.print(IterationNumber);
-    Serial.println(" times.");
-    if (IterationNumber == 3){
+//    Serial.print("Current Threshold Reached : ");
+//    Serial.print(IterationNumber);
+//    Serial.println(" times.");
+    if (IterationNumber == 10){
       digitalWrite(MOSFET, LOW);
       digitalWrite(LED, LOW);
-      Serial.println("Current cut-off point reached.");
-      Serial.println("Cut off Circuit Loop");
+//      Serial.println("Current cut-off point reached.");
+//      Serial.println("Cut off Circuit Loop");
       while (true){
-        int currentMeasure();
+        int current = CurrentMeasure();
         if (current > 0.00001 ) {
-          Serial.println("Warning! MOSFET Failed to turn off circuit!");
+//          Serial.println("Warning! MOSFET Failed to turn off circuit!");
           delay(1000);
         } else {
-          Serial.println("MOSFET Porperly Turned off Circuit :)");
+//          Serial.println("MOSFET Porperly Turned off Circuit :)");
           while (true);
         }
       }
@@ -84,6 +93,7 @@ void loop() {
   } else {
     IterationNumber = 0;
   } 
+
 }
 
 
@@ -91,38 +101,64 @@ void loop() {
 /*******************************************************************************/
 float CurrentMeasure() { 
   // Define Variables
-  float avgCurrent = 0;
-  int avgAdcRaw = 0;
-  float avgVoltage = 0;
   float current = 0;
   int adcRaw = 0;
   float voltage = 0;
+  
   // Read & print ADC output
    adcRaw = i2cADC.readI2CADC();
+//  Serial.print("ADC: ");
+//  Serial.print(adcRaw);
+//  Serial.println("/4096.");
+
+  // Calculate & print current
+  voltage = (adcRaw/4096.0)*I2CadcVRef/1000.0;
+//  Serial.print("Voltage: ");
+//  Serial.print(voltage, 8);
+//  Serial.println(" V.");
+  current = voltage/0.3;
+//  Serial.print("Current: ");
+//  Serial.print(current, 8);
+//  Serial.println(" A.");
+//  Serial.println();
+  return current;
+}
+
+/******************* Average Current Mesure Function ***************************/
+/*******************************************************************************/
+float AverageCurrentMeasure() { 
+  // Define Variables
+  float avgCurrent = 0;
+  int avgAdcRaw = 0;
+  float avgVoltage = 0;
+
+  // Read & print ADC output
    avgAdcRaw = i2cADC.calcRollingAVG(); 
-  Serial.print("ADC: ");
-  Serial.print(adcRaw);
-  Serial.println("/4096.");
+//  Serial.print("ADC: ");
+//  Serial.print(adcRaw);
+//  Serial.println("/4096.");
 
   // Calculate & print current
   //Average
   avgVoltage = (avgAdcRaw/4096.0)*I2CadcVRef/1000.0;
-  Serial.print("Average Voltage: ");
-  Serial.print(avgVoltage, 8);
-  Serial.println(" V.");
+//  Serial.print("Average Voltage: ");
+//  Serial.print(avgVoltage, 8);
+//  Serial.println(" V.");
   avgCurrent = avgVoltage/0.3;
-  Serial.print("Average Current: ");
-  Serial.print(avgCurrent, 8);
-  Serial.println(" A.");
+//  Serial.print("Average Current: ");
+//  Serial.print(avgCurrent, 8);
+//  Serial.println(" A.");
   //Instantaneous
-  voltage = (adcRaw/4096.0)*I2CadcVRef/1000.0;
-  Serial.print("Voltage: ");
-  Serial.print(voltage, 8);
-  Serial.println(" V.");
-  current = voltage/0.3;
-  Serial.print("Current: ");
-  Serial.print(current, 8);
-  Serial.println(" A.");
-  Serial.println();
-  return current;
+
+  return avgCurrent;
+}
+
+/********************* Serial Connection Initailization ************************/
+/*******************************************************************************/
+void SerialLink() {
+  Serial.begin(9600);   //Start Serail Connection with Matlab
+  Serial.print("*\n");   // Tell matlab to begin with * command
+  while(input != '*') {   // wait for handshake signal * from matlab to begin 
+  input = Serial.read();
+  }
 }
