@@ -4,11 +4,11 @@ currentArray(1) = 0;
 timeArray(1) = 0;
 %Determine if There is old data
 try
-    if (Cell1CharingData.DataNumber < 1)
+    if (Cell1CharingData.DataNumber > 1)
     end
     disp('Resume Charging Cell')
-    size = size(Cell1CharingData.Time)
-    previousTime = Cell1CharingData.Time(size(2));
+    PreviousDataPoints = length(Cell1CharingData.Time);
+    previousTime = Cell1CharingData.Time(PreviousDataPoints);
 catch 
     dataNumber = 1;
     Cell1CharingData = struct('Current',currentArray,'Time',timeArray,'DataNumber', dataNumber);
@@ -20,7 +20,7 @@ end
 
 %% Start Serial Handshake
 delete(instrfind);
-s = serial('/dev/tty.usbserial-00002214'); %intializes serial port being read from
+s = serial('/dev/tty.usbserial-00001214'); %intializes serial port being read from
 fopen(s);
 inputString = fscanf(s);
 while ~strncmpi(inputString,'*',1)
@@ -56,7 +56,7 @@ while true
     
     %%  Put Data into Structure Plot Data
     Cell1CharingData.Current(Cell1CharingData.DataNumber) = current;
-    Cell1CharingData.Time(Cell1CharingData.DataNumber) = time;
+    Cell1CharingData.Time(Cell1CharingData.DataNumber) = time + previousTime;
     Cell1CharingData.DataNumber = Cell1CharingData.DataNumber + 1;
 
     plot(Cell1CharingData.Time, Cell1CharingData.Current)
