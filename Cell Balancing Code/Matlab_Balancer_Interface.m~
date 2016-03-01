@@ -1,5 +1,10 @@
 %% READ ME
-% make sure to rename Charging Cell to correct number
+% make sure to rename Charging Cell to correct number and Charge Number
+% Make sure to save workspace and check for workspace before charging
+% make sure DC-DC Voltage is 3.66 Volts
+%
+
+
 
 %% Report Data code: Single cell data
 clc; close all;
@@ -7,12 +12,12 @@ currentArray(1) = 0;
 timeArray(1) = 0;
 %Determine if There is old data
 try
-    if (Cell1CharingData.DataNumber > 1)
+    if (Cell1CharingData1.DataNumber > 1)
     end
     disp('Resume Charging Cell')
-    PreviousDataPoints = length(Cell1CharingData.Time);
+    PreviousDataPoints = length(Cell1CharingData1.Time);
         %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%Name Charging Cell%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-    previousTime = Cell1CharingData.Time(PreviousDataPoints);
+    previousTime = Cell1CharingData1.Time(PreviousDataPoints);
 catch 
     dataNumber = 1;
         %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%Name Charging Cell%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -60,11 +65,11 @@ while true
     
     
     %%  Put Data into Structure Plot Data
-    Cell1CharingData.Current(Cell1CharingData.DataNumber) = current;
-    Cell1CharingData.Time(Cell1CharingData.DataNumber) = time + previousTime;
-    Cell1CharingData.DataNumber = Cell1CharingData.DataNumber + 1;
+    Cell1CharingData1.Current(Cell1CharingData1.DataNumber) = current;
+    Cell1CharingData1.Time(Cell1CharingData1.DataNumber) = time + previousTime;
+    Cell1CharingData1.DataNumber = Cell1CharingData1.DataNumber + 1;
 
-    plot(Cell1CharingData.Time, Cell1CharingData.Current)
+    plot(Cell1CharingData1.Time, Cell1CharingData1.Current)
     pause(0.01);   
     
     

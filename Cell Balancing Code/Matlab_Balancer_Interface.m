@@ -2,6 +2,9 @@
 % make sure to rename Charging Cell to correct number and Charge Number
 % Make sure to save workspace and check for workspace before charging
 % make sure DC-DC Voltage is 3.66 Volts
+% control c stops the code
+% note that charging will continue if you stop matlab
+
 
 
 

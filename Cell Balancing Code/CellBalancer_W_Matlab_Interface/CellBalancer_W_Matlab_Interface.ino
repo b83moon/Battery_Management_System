@@ -62,7 +62,7 @@ void loop() {
   time1 = millis();
   float avgCurrent = AverageCurrentMeasure();
   CurrentMeasure();
-  delay(500);
+  delay(2000);
 
   //Send serial data to Matlab
   Serial.print("&\n"); //send cell #
