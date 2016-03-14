@@ -22,6 +22,9 @@
 
 // Initialize Global Variables 
 int chargingCell = 0;
+float voltCell = {0,0,0,0};
+int activeCell = -1;
+float DeltaV = 0;
 const byte i2cAddress = 0x4E;  
 const float currentThresh = 0.5;  // [A]
 const int I2CadcVRef = 4880;
@@ -52,6 +55,20 @@ Wire.begin();
 void loop() {
   // put your main code here, to run repeatedly:
 
+if (weakCell != -1) {
+  DeltaV = Compare(weakCell, *voltCell);
+  int activeCell = weakCell;  
+
+  while ( (DeltaV > Vthresh) && (activeCell == weakCell) ) {
+    chargeCell(weakCell);
+    delay(charge_amount);
+    voltCell = GetAllVolts(*voltCell);
+    activeCell = FindWeak(*voltCell);
+    DeltaV = Compare(weakCell, *voltCell)
+  }
+  ChargeCell(0);
+  activeCell = -1;
+}
 
 
 }
@@ -71,7 +88,7 @@ float PackCurrent() {
 
 /*************************** Charge Cell Function ******************************/
 /*******************************************************************************/
-/* This function charges the arguement cell. This function takes in a cell 
+/* This function charges the argument cell. This function takes in a cell 
  * value of 1-4 for each cell and then 0 to turn off charging */
 void ChargeCell(int cell) {
    SwitchToCell(cell);
@@ -106,7 +123,7 @@ float CellVoltage(int cell) {
 
 
 /***********************************************************************************/
-/**Dont use these functions they are for inside the above fucntions that I will use*/
+/* Dont use these functions they are for inside the above functions that I will use*/
 /***********************************************************************************/
 
 
@@ -200,17 +217,91 @@ void SwitchToCell(int cell) {
 } 
 
 
-/*************************** Get the voltage ***************************/
+/*************************** Get ADC Voltage Reading ***************************/
 /*******************************************************************************/
-/* This Function will turn on or off the appropraite switches to access the given cell
- * number. Switching to cell */
+/* Retrieves the output from the ADC */
 
 float ADCVoltage() {
  float voltage;
 
  int adcRaw = i2cADC.readI2CADC();
- // convert to voltage
- voltage = adcRaw / I2CadcVRef;
+
+ // Convert reading to voltage
+ voltage = adcRaw / 4096 * I2CadcVRef;
  return voltage;
 }
+
+
+/*************************** Find a Weak Cell **********************************/
+/*******************************************************************************/
+/* Looks for the cell with the lowest voltage, compared to the other cells.    */
+
+int FindWeak(voltCell) {
+  float DeltaVarray[4][4] = {{0,0,0,0}, {0,0,0,0}, {0,0,0,0}, {0,0,0,0}};
+  float maxDeltaV = 0;
+  int iMax = 0;
+  int jMax = 1;
+
+  // Enumerate the DeltaVarray
+  for (i = 0, i < 3, i = i + 1) {
+    for (j = i + 1, j < 4, j = j + 1) {
+      DeltaVaray[i][j] = voltCell[j] - voltCell[i]
+    }
+  }
+
+  // Find the cell with the lowest voltage
+  for (i = 0, i < 3, i = i + 1) {
+    for (j = i +1, j < 4, j = j + 1) {
+      if (abs(DeltaVarray[i][j]) > abs(DeltaVarray[iMax][jMax]) ) 
+      {
+        maxDeltaV = DeltaVarray[i][j];
+        iMax = i;
+        jMax = j;
+      }
+      else
+      }
+    }
+    if(sign(DeltaVarray[iMax][jMax]) > 0) {
+      weakCell = jMax;
+    } else if(sign(DeltaVarray[iMax][jMax] < 0)) {
+      weakCell = iMax;
+    } else
+    weakCell = -1;
+  }
+
+
+/*************************** Measures all Cell Voltages ************************/
+/*******************************************************************************/
+/* Measures the voltage of each cell and returns an array of voltages.         */
+
+void GetAllVolts(float *voltCell) {
+  int i = 0;
+
+  for(i = 0, i < 4, i = i + 1) {
+    voltCell[i-1] = cellVoltage[i];
+  }
+} 
+
+
+/*************************** Compares Weak Cells to Average*********************/
+/*******************************************************************************/
+/* Given a weak cell. Finds the difference between the weak cell's voltage and  */
+/* the average of the voltages of the other cells. */
+
+float Compare (weakCell, voltCell) {
+  float Vsum = 0;
+  float Vavg = 0;
+  float DeltaV = 0;
+
+  for(i = 0, i < 4, i = i + 1) {
+    if (i != weakCell) {
+      Vsum = Vsum + voltCell[i];
+    }
+    else
+  }
+  Vavg = Vsum / 3;
+  DeltaV = Vavg - voltCell[weakCell];
+  return DeltaV;
+}
+
 
